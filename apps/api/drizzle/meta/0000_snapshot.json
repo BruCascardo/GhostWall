@@ -1,0 +1,67 @@
+{
+  "id": "a8026a9b-9e36-4038-af32-30308b0c0bd1",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.empresa": {
+      "name": "empresa",
+      "schema": "",
+      "columns": {
+        "cuit": {
+          "name": "cuit",
+          "type": "varchar(11)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "razon_social": {
+          "name": "razon_social",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha_alta": {
+          "name": "fecha_alta",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "estado": {
+          "name": "estado",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ACTIVO'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "empresa_cuit_formato": {
+          "name": "empresa_cuit_formato",
+          "value": "\"empresa\".\"cuit\" ~ '^[0-9]{11}$'"
+        },
+        "empresa_estado_valido": {
+          "name": "empresa_estado_valido",
+          "value": "\"empresa\".\"estado\" in ('ACTIVO', 'SUSPENDIDO', 'INACTIVO')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

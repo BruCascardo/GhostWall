@@ -1,0 +1,53 @@
+# Servicios de infraestructura para desarrollo local (perfil "infra", ADR 0011).
+# Uso desde la raíz del repositorio: npm run infra:up   (requiere el archivo .env)
+# Las aplicaciones corren en el host. El perfil "full" se agregará cuando existan imágenes de las apps.
+name: ghostwall
+
+services:
+  postgres:
+    image: postgres:18.6
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Definir POSTGRES_DB en .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Definir POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Definir POSTGRES_PASSWORD en .env}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-5433}:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8.10.2
+    ports:
+      - '127.0.0.1:${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.8.1
+    command: ['start-dev']
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER:?Definir KEYCLOAK_ADMIN_USER en .env}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Definir KEYCLOAK_ADMIN_PASSWORD en .env}
+      KC_HEALTH_ENABLED: 'true'
+    ports:
+      - '127.0.0.1:${KEYCLOAK_PORT:-8080}:8080'
+
+  mailpit:
+    image: axllent/mailpit:v1.31.5
+    ports:
+      - '127.0.0.1:${MAILPIT_SMTP_PORT:-1025}:1025'
+      - '127.0.0.1:${MAILPIT_UI_PORT:-8025}:8025'
+
+volumes:
+  postgres-data:
+  redis-data:

@@ -1,0 +1,41 @@
+[project]
+name = "ghostwall-ml"
+version = "0.1.0"
+description = "Servicio de ML de GhostWall: triage NLP, scoring de riesgo y generación de contenido (ADR 0009)"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi[standard]>=0.143.1,<0.144",
+    "pydantic-settings>=2.16,<3",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17,<0.18",
+    "mypy>=2.4,<3",
+    "pytest>=9.1,<10",
+]
+
+[build-system]
+requires = ["uv_build>=0.13,<0.14"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+# E/W pycodestyle, F pyflakes, I isort, B bugbear, UP pyupgrade, S bandit (seguridad), N nombres
+select = ["E", "W", "F", "I", "B", "UP", "S", "N"]
+
+[tool.ruff.lint.per-file-ignores]
+# En pytest, assert es la forma idiomática de verificar resultados.
+"tests/**" = ["S101"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"

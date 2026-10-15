@@ -1,0 +1,56 @@
+{
+  "name": "ghostwall",
+  "private": true,
+  "description": "GhostWall — plataforma de seguridad organizacional (Proyecto Final ISI, UTN FRRO 2026)",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=24.15.0 <25",
+    "npm": ">=11"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "dev:api": "npm run dev --workspace @ghostwall/api",
+    "dev:web": "npm run dev --workspace @ghostwall/web",
+    "dev:ml": "uv run --directory services/ml --env-file ../../.env fastapi dev src/ghostwall_ml/main.py --port 8001",
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test:unit",
+    "test:unit": "npm run test:unit --workspaces --if-present && npm run ml:test && npm run test:hooks",
+    "test:hooks": "node --test .claude/hooks/bloquear-operaciones-git.test.mjs",
+    "test:integration": "npm run test:integration --workspaces --if-present",
+    "test:e2e": "npm run test:e2e --workspaces --if-present",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ml:sync": "uv sync --directory services/ml --locked",
+    "ml:lint": "uv run --directory services/ml ruff check .",
+    "ml:format": "uv run --directory services/ml ruff format .",
+    "ml:format:check": "uv run --directory services/ml ruff format --check .",
+    "ml:typecheck": "uv run --directory services/ml mypy",
+    "ml:test": "uv run --directory services/ml pytest",
+    "verify:js": "npm run format:check && npm run lint && npm run typecheck && npm run build",
+    "verify:ml": "npm run ml:format:check && npm run ml:lint && npm run ml:typecheck",
+    "verify": "npm run verify:js && npm run verify:ml && npm run test:unit",
+    "infra:up": "docker compose --env-file .env -f infra/compose/compose.yaml up -d",
+    "infra:down": "docker compose --env-file .env -f infra/compose/compose.yaml down",
+    "infra:ps": "docker compose --env-file .env -f infra/compose/compose.yaml ps",
+    "infra:logs": "docker compose --env-file .env -f infra/compose/compose.yaml logs -f",
+    "infra:config": "docker compose --env-file .env -f infra/compose/compose.yaml config --quiet"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.12.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.13.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.2"
+  }
+}

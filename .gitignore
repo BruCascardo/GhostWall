@@ -1,0 +1,44 @@
+# Documentos originales: no se versionan en este repositorio público (ADR 0016)
+/docs/1er Entrega/
+/docs/2da Entrega/
+/docs/3er Entrega/
+/docs/Artefactos/
+/docs/Cosas Generales/
+
+# Variables de entorno con secretos (solo se versiona .env.example)
+.env
+.env.*
+!.env.example
+
+# Node / TypeScript
+node_modules/
+dist/
+*.tsbuildinfo
+.next/
+next-env.d.ts
+coverage/
+npm-debug.log*
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# Claude Code: configuración personal (la compartida es .claude/settings.json, ver docs/claude-code.md)
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/worktrees/
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Resultados de Playwright
+test-results/
+playwright-report/
